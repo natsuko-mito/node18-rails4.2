@@ -1,0 +1,52 @@
+FROM node:18.20.5
+
+RUN mkdir /src
+
+WORKDIR /src
+
+RUN apt-get update -qq && apt-get install -y \
+  build-essential \
+  default-mysql-client \
+  curl \
+  git \
+  libssl-dev \
+  libreadline-dev \
+  zlib1g-dev \
+  libffi-dev \
+  libyaml-dev \
+  autoconf \
+  bison \
+  libgdbm-dev \
+  libncurses5-dev \
+  libtool \
+  libsqlite3-dev \
+  sqlite3 \
+  libgmp-dev \
+  libreadline-dev \
+  default-mysql-client
+
+# Install rbenv and ruby-build
+RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && \
+  echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc && \
+  echo 'eval "$(rbenv init -)"' >> ~/.bashrc && \
+  git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build && \
+  ~/.rbenv/bin/rbenv install 2.5.8 && \
+  ~/.rbenv/bin/rbenv global 2.5.8
+
+# Install Bundler, gems, Rails
+RUN ~/.rbenv/shims/gem install bundler -v 1.17.3 && \
+  ~/.rbenv/shims/gem install nokogiri -v 1.10.10 && \
+  ~/.rbenv/shims/gem install loofah -v 2.2.3 && \
+  ~/.rbenv/shims/gem install rails-dom-testing -v 1.0.9 && \
+  ~/.rbenv/shims/gem install rails-html-sanitizer -v 1.0.4 && \
+  ~/.rbenv/shims/gem install thor -v 0.20.3 && \
+  ~/.rbenv/shims/gem install timeout -v 0.4.0 && \
+  ~/.rbenv/shims/gem install net-protocol -v 0.1.2 && \
+  ~/.rbenv/shims/gem install net-imap -v 0.2.2 && \
+  ~/.rbenv/shims/gem install net-smtp -v 0.3.0 && \
+  ~/.rbenv/shims/gem install mini_mime -v 1.1.2 && \
+  ~/.rbenv/shims/gem install rubygems-update -v 3.3.9 && \
+  ~/.rbenv/shims/gem install rails -v 4.2.11.1
+
+# Clone the Rails repository
+# RUN git clone https://github.com/rails/rails.git -b v4.2.11.1
